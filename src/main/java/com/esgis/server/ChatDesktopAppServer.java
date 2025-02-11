@@ -5,7 +5,10 @@
 package com.esgis.server;
 
 import Database.DbConnection;
-import java.sql.Connection;
+
+import Controller.UserController;
+import Model.User;
+import java.util.List;
 
 /**
  *
@@ -15,12 +18,11 @@ public class ChatDesktopAppServer {
 
     public static void main(String[] args) {
         System.out.println("🔗 Tentative de connexion à la base de données...");
+        DbConnection con = new DbConnection();
+        UserController userC = new UserController();
+        User user = userC.getUserById(1);
+        user.display();
         
-        Connection conn = DbConnection.getConnection();
-        if (conn != null) {
-            System.out.println("✅ Connexion réussie !");
-        } else {
-            System.out.println("❌ Échec de la connexion.");
-        }
+        
     }
 }

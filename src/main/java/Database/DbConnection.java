@@ -13,19 +13,29 @@ import java.sql.SQLException;
  * @author mike
  */
 public class DbConnection {
+    public static  Connection con; 
     
-    private static final String URL = "jdbc:mysql://localhost:3306/ChatApp";
-    private static final String USER = "mike";
-    private static final String PASSWORD = "RfireX_00";
-    
-    public static Connection getConnection() {
-        try {
-            return DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+   static {
+    try{
+       Class.forName("com.mysql.cj.jdbc.Driver");
+            
+            String url = "jdbc:mysql://localhost:3306/ChatApp?serverTimezone=UTC&useLegacyDateTimeCode=false";
+            String user = "mike";
+            String password = "RfireX_00";
+            con=DriverManager.getConnection(url, user, password);
+            
+            if (con !=null && !con.isClosed()){
+                System.out.println("Connection a la base de données etablie avec succes");
+            }else{
+                System.out.println("erreur lors de la connexion a la base de donnees");
         }
     }
-    
-    
+        catch(ClassNotFoundException | SQLException e){
+            System.out.println("Erreur lors de la connexion de la base de données "+e.getMessage());
+            
+        }   
+    }
+    public static  Connection getConnection() {
+        return con;
+    }
 }
