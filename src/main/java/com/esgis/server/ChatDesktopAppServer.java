@@ -4,25 +4,24 @@
 
 package com.esgis.server;
 
+import Controller.TCPServer;
 import Database.DbConnection;
+import java.io.IOException;
 
-import Controller.UserController;
-import Model.User;
-import java.util.List;
+
 
 /**
  *
  * @author mike
  */
 public class ChatDesktopAppServer {
+    
+    private static int port = 4444;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("🔗 Tentative de connexion à la base de données...");
         DbConnection con = new DbConnection();
-        UserController userC = new UserController();
-        User user = userC.getUserById(1);
-        user.display();
-        
-        
+        TCPServer server = new TCPServer();
+        server.start(port);
     }
 }

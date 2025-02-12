@@ -79,28 +79,36 @@ public class UserController {
     }
     
     public User loginUser(String username, String passwd) {
-        User user = null;
-        query = "SELECT * FROM User WHERE username = ? AND passwd = ?";
+    User user = null;
+    query = "SELECT * FROM User WHERE username = ? AND passwd = ?";
 
-        try {
-            ps = con.prepareStatement(query);
-            ps.setString(1, username);
-            ps.setString(2, passwd);
-            set = ps.executeQuery();
+    try {
+        ps = con.prepareStatement(query);
+        ps.setString(1, username);
+        ps.setString(2, passwd);
+        set = ps.executeQuery();
 
-            if (set.next()) {
-                user = new User();
-                user.setId_user(set.getInt("id_user"));
-                user.setUsername(set.getString("username"));
-                user.setFullname(set.getString("fullname"));
-                user.setFonction(set.getString("fonction"));
-                user.setStatus(set.getBoolean("status"));
+        if (set.next()) {
+            user = new User();
+            user.setId_user(set.getInt("id_user"));
+            user.setUsername(set.getString("username"));
+            user.setFullname(set.getString("fullname"));
+            user.setFonction(set.getString("fonction"));
+            user.setStatus(set.getBoolean("status"));
+
+            // Mettre à jour le statut de l'utilisateur à 1 (connecté)
+            String updateQuery = "UPDATE User SET status = 1 WHERE id_user = ?";
+            try (PreparedStatement updatePs = con.prepareStatement(updateQuery)) {
+                updatePs.setInt(1, user.getId_user());
+                updatePs.executeUpdate();
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return user;
+    } catch (SQLException ex) {
+        Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
     }
+    return user;
+}
+
     
     
 

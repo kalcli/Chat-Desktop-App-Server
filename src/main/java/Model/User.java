@@ -4,14 +4,16 @@
  */
 package Model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author mike
  */
-public class User {
+public class User implements Serializable {
     private int id_user;
     private String username;
-    private String password;
+    private String passwd;
     private String fullname;
     private String fonction;
     private boolean status;
@@ -23,19 +25,16 @@ public class User {
     public User(int id_user, String username, String password, String fullname, String fonction, boolean status) {
         this.id_user = id_user;
         this.username = username;
-        this.password = password;
+        this.passwd = password;
         this.fullname = fullname;
         this.fonction = fonction;
         this.status = status;
     }
 
-    // Constructeur sans ID (utilisé pour l'insertion dans la base de données)
-    public User(String username, String password, String fullname, String fonction, boolean status) {
+    // Constructeur utilise pour envoyer les informations d'identification
+    public User(String username, String password) {
         this.username = username;
-        this.password = password;
-        this.fullname = fullname;
-        this.fonction = fonction;
-        this.status = status;
+        this.passwd = password;
     }
 
     // Constructeur sans mot de passe (sécurité, si on ne veut pas exposer le password)
@@ -57,7 +56,7 @@ public class User {
     }
 
     public String getPassword() {
-        return password;
+        return passwd;
     }
 
     public String getFullname() {
@@ -82,7 +81,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.passwd = password;
     }
 
     public void setFullname(String fullname) {
