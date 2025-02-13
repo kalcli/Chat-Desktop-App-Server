@@ -106,8 +106,21 @@ public class UserController {
     } catch (SQLException ex) {
         Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
     }
-    return user;
+        return user;
+    }
+    
+    public void logoutUser(int id_user) {
+    query = "UPDATE User SET status = 0 WHERE id_user = ?";
+
+    try {
+        ps = con.prepareStatement(query);
+        ps.setInt(1, id_user);
+        ps.executeUpdate();
+    } catch (SQLException ex) {
+        Logger.getLogger(UserController.class.getName()).log(Level.SEVERE, null, ex);
+    }
 }
+
 
     
     

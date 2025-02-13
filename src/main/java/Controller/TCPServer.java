@@ -1,79 +1,80 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Controller;
 
 import Model.User;
+import Model.LoginResponse;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
-/**
- *
- * @author mike
- */
 public class TCPServer {
-    private ServerSocket ServerSocket;
+    private ServerSocket serverSocket;
        
     public void start(int port) throws IOException {
-        ServerSocket = new ServerSocket(port);
-        System.out.println("Serveur demarre sur le port" + port);
-        while(true){
-            new TcpClientHandler(ServerSocket.accept()).start();
+        serverSocket = new ServerSocket(port);
+        System.out.println("Serveur démarré sur le port " + port);
+        while (true) {
+            new TcpClientHandler(serverSocket.accept()).start();
         }
-        
     }
     
-    public void stop() throws IOException{
-        ServerSocket.close();
+    public void stop() throws IOException {
+        serverSocket.close();
     }
     
-    private static class TcpClientHandler extends Thread{
+    private static class TcpClientHandler extends Thread {
         private Socket clientSocket;
         private ObjectInputStream ois;
         private ObjectOutputStream oos;
-        
-        public TcpClientHandler(Socket socket){
+
+        public TcpClientHandler(Socket socket) {
             this.clientSocket = socket;
         }
-        
+
         @Override
-        public void run(){
+        public void run() {
             try {
                 oos = new ObjectOutputStream(clientSocket.getOutputStream());
                 ois = new ObjectInputStream(clientSocket.getInputStream());
                 System.out.println("Connexion acceptée pour : " + clientSocket.getRemoteSocketAddress());
-                
-                //Lecture des informations d'identifications
+
+                // Lecture des informations d'identification
                 User credentials = (User) ois.readObject();
-                System.out.println("Tentative de connexion : " + credentials);
-                
+                System.out.println("Tentative de connexion : " + credentials.getUsername());
+
                 String username = credentials.getUsername();
                 String passwd = credentials.getPassword();
-                
-                //Verification des informations
-                UserController check = new UserController();
-                User res = check.loginUser(username, passwd);
-                
-                //Renvoie des informations au client
-                oos.writeObject(res);
-                
+
+                // Vérification des informations
+                UserController userController = new UserController();
+                User res = userController.loginUser(username, passwd);
+
+                if (res != null) {
+                    System.out.println("Connexion réussie pour : " + res.getUsername());
+
+                    // Récupérer la liste des utilisateurs
+                    List<User> userList = userController.getAllUser();
+
+                    // Créer l'objet de réponse et l'envoyer
+                    LoginResponse response = new LoginResponse(res, userList);
+                    oos.writeObject(response);
+                } else {
+                    // Envoyer une réponse négative (utilisateur non authentifié)
+                    oos.writeObject(null);
+                }
+
                 stopClient();
-                
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
-        
-        public void stopClient() throws IOException{
+
+        public void stopClient() throws IOException {
             oos.close();
             ois.close();
             clientSocket.close();
         }
-        
     }
-    
 }

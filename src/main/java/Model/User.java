@@ -21,15 +21,7 @@ public class User implements Serializable {
     // Constructeur par défaut
     public User() {}
 
-    // Constructeur avec tous les attributs
-    public User(int id_user, String username, String password, String fullname, String fonction, boolean status) {
-        this.id_user = id_user;
-        this.username = username;
-        this.passwd = password;
-        this.fullname = fullname;
-        this.fonction = fonction;
-        this.status = status;
-    }
+    
 
     // Constructeur utilise pour envoyer les informations d'identification
     public User(String username, String password) {
@@ -103,6 +95,13 @@ public class User implements Serializable {
         System.out.println("Nom complet: " + fullname);
         System.out.println("Fonction: " + fonction);
         System.out.println("Statut: " + (status ? "Actif" : "Inactif"));
+        System.out.println("------------------------------");
+    }
+    
+    // Méthode d'affichage des informations d'identifications
+    public void displayCredentials() {
+        System.out.println("Nom d'utilisateur: " + username);
+        System.out.println("Mot de passe: " + passwd);
         System.out.println("------------------------------");
     }
     
